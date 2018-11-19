@@ -68,6 +68,7 @@ void help()
 	cout<<"  -v, --version              show version number"<<endl;
 	cout<<"  -V, --version-long         show long version number"<<endl;
 	cout<<"  -c, --config FILE          common miner configuration file"<<endl;
+	cout<<"  --diff DIFFICULTY          difficulty"<<endl;
 	cout<<"  -C, --poolconf FILE        pool configuration file"<<endl;
 #ifdef _WIN32
 	cout<<"  --noUAC                    disable the UAC dialog"<<endl;
@@ -619,6 +620,18 @@ int main(int argc, char *argv[])
 				return 1;
 			}
 			params::inst().configFile = argv[i];
+		}
+		else if( opName.compare("--diff") == 0)
+		{
+			++i;
+			if( i >=argc )
+			{
+				printer::inst()->print_msg(L0, "No argument for parameter '--diff' given");
+				win_exit();
+				return 1;
+			}
+			params::inst().diff = std::stoi(argv[i]);
+			std::cout<< "Difficulty =  " << params::inst().diff << std::endl;
 		}
 		else if(opName.compare("-C") == 0 || opName.compare("--poolconf") == 0)
 		{

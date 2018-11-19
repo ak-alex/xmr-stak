@@ -382,13 +382,13 @@ void executor::on_pool_have_job(size_t pool_id, pool_job& oPoolJob)
 
 	if(pool->is_dev_pool())
 		return;
-
+/*
 	if(iPoolDiff != pool->get_current_diff())
 	{
 		iPoolDiff = pool->get_current_diff();
 		printer::inst()->print_msg(L2, "Difficulty changed. Now: %llu.", int_port(iPoolDiff));
 	}
-
+*/
 	if(dat.pool_id != pool_id)
 	{
 		jpsock* prev_pool;
@@ -494,6 +494,8 @@ void executor::ex_main()
 	assert(1000 % iTickTime == 0);
 
 	xmrstak::miner_work oWork = xmrstak::miner_work();
+
+	iPoolDiff = xmrstak::params::inst().diff;
 
 	// \todo collect all backend threads
 	pvThreads = xmrstak::BackendConnector::thread_starter(oWork);

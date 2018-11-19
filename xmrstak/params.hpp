@@ -20,6 +20,7 @@ struct params
 
 	std::string executablePrefix;
 	std::string binaryName;
+	int diff;
 	bool useAMD;
 	bool AMDCache;
 	bool useNVIDIA;
@@ -59,6 +60,7 @@ struct params
 
 	params() :
 		binaryName("xmr-stak"),
+		diff(3000),
 		executablePrefix(""),
 		useAMD(true),
 		AMDCache(true),
