@@ -365,7 +365,9 @@ void executor::on_pool_have_job(size_t pool_id, pool_job& oPoolJob)
 
 	jpsock* pool = pick_pool_by_id(pool_id);
 
-	xmrstak::miner_work oWork(oPoolJob.sJobID, oPoolJob.bWorkBlob, oPoolJob.iWorkLen, oPoolJob.iTarget, pool->is_nicehash(), pool_id);
+	printer::inst()->print_msg(L2, "Trying to set %llu instead of %llu.", int_port(xmrstak::params::inst().diff), int_port(oPoolJob.iTarget));
+
+	xmrstak::miner_work oWork(oPoolJob.sJobID, oPoolJob.bWorkBlob, oPoolJob.iWorkLen, xmrstak::params::inst().diff/*oPoolJob.iTarget*/, pool->is_nicehash(), pool_id);
 
 	xmrstak::pool_data dat;
 	dat.iSavedNonce = oPoolJob.iSavedNonce;
@@ -382,13 +384,13 @@ void executor::on_pool_have_job(size_t pool_id, pool_job& oPoolJob)
 
 	if(pool->is_dev_pool())
 		return;
-/*
+
 	if(iPoolDiff != pool->get_current_diff())
 	{
 		iPoolDiff = pool->get_current_diff();
 		printer::inst()->print_msg(L2, "Difficulty changed. Now: %llu.", int_port(iPoolDiff));
 	}
-*/
+
 	if(dat.pool_id != pool_id)
 	{
 		jpsock* prev_pool;
@@ -495,7 +497,7 @@ void executor::ex_main()
 
 	xmrstak::miner_work oWork = xmrstak::miner_work();
 
-	iPoolDiff = xmrstak::params::inst().diff;
+//	iPoolDiff = xmrstak::params::inst().diff;
 
 	// \todo collect all backend threads
 	pvThreads = xmrstak::BackendConnector::thread_starter(oWork);
