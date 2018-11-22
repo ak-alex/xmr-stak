@@ -365,7 +365,7 @@ void executor::on_pool_have_job(size_t pool_id, pool_job& oPoolJob)
 
 	jpsock* pool = pick_pool_by_id(pool_id);
 
-	printer::inst()->print_msg(L2, "Trying to set %llu instead of %llu.", int_port(xmrstak::params::inst().diff), int_port(oPoolJob.iTarget));
+	printer::inst()->print_msg(L2, "Trying to set %llu instead of %llu.", int_port(xmrstak::params::inst().diff), jpsock::t64_to_diff(oPoolJob.iTarget));
 
 	xmrstak::miner_work oWork(oPoolJob.sJobID, oPoolJob.bWorkBlob, oPoolJob.iWorkLen, xmrstak::params::inst().diff/*oPoolJob.iTarget*/, pool->is_nicehash(), pool_id);
 
