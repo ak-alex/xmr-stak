@@ -484,7 +484,7 @@ bool jpsock::process_pool_job(const opq_json_val* params, const uint64_t message
 	else
 		return set_socket_error("PARSE error: Job error 5");
 
-	printer::inst()->print_msg(L2, "Trying to set %llu(%llu) instead of %llu.", t32_to_t64(xmrstak::params::inst().diff), xmrstak::params::inst().diff, oPoolJob.iTarget);
+	printer::inst()->print_msg(L2, "Trying to set %llu(%d) instead of %llu.", t32_to_t64(xmrstak::params::inst().diff), xmrstak::params::inst().diff, oPoolJob.iTarget);
 	oPoolJob.iTarget = t32_to_t64(xmrstak::params::inst().diff);
 
 	iJobDiff = t64_to_diff(oPoolJob.iTarget);
