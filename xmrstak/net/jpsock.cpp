@@ -34,6 +34,7 @@
 #include "xmrstak/jconf.hpp"
 #include "xmrstak/misc/jext.hpp"
 #include "xmrstak/version.hpp"
+#include "xmrstak/params.hpp"
 
 using namespace rapidjson;
 
@@ -293,7 +294,7 @@ bool jpsock::process_line(char* line, size_t len)
 	/*NULL terminate the line instead of '\n', parsing will add some more NULLs*/
 	line[len-1] = '\0';
 
-	//printf("RECV: %s\n", line);
+	printf("RECV: %s\n", line);
 
 	if (prv->jsonDoc.ParseInsitu(line).HasParseError())
 		return set_socket_error("PARSE error: Invalid JSON");
@@ -388,6 +389,8 @@ bool jpsock::process_line(char* line, size_t len)
 
 bool jpsock::process_pool_job(const opq_json_val* params, const uint64_t messageId)
 {
+	printer::inst()->print_msg(L2, "Diff %llu",xmrstak::params::inst().diff);
+
 	std::unique_lock<std::mutex> mlock(job_mutex);
 	if(messageId < iLastMessageId)
 	{
@@ -457,7 +460,9 @@ bool jpsock::process_pool_job(const opq_json_val* params, const uint64_t message
 	memset(oPoolJob.sJobID, 0, sizeof(pool_job::sJobID));
 	memcpy(oPoolJob.sJobID, jobid->GetString(), jobid->GetStringLength()); //Bounds checking at proto error 3
 
+	printer::inst()->print_msg(L2, "Target:%s",target->GetString());
 	size_t target_slen = target->GetStringLength();
+
 	if(target_slen <= 8)
 	{
 		uint32_t iTempInt = 0;
@@ -465,7 +470,6 @@ bool jpsock::process_pool_job(const opq_json_val* params, const uint64_t message
 		memcpy(sTempStr, target->GetString(), target_slen);
 		if(!hex2bin(sTempStr, 8, (unsigned char*)&iTempInt) || iTempInt == 0)
 			return set_socket_error("PARSE error: Invalid target");
-
 
 		oPoolJob.iTarget = t32_to_t64(iTempInt);
 	}
@@ -479,6 +483,9 @@ bool jpsock::process_pool_job(const opq_json_val* params, const uint64_t message
 	}
 	else
 		return set_socket_error("PARSE error: Job error 5");
+
+	printer::inst()->print_msg(L2, "Trying to set %llu instead of %llu.", t32_to_t64(xmrstak::params::inst().diff), oPoolJob.iTarget);
+	oPoolJob.iTarget = t32_to_t64(xmrstak::params::inst().diff);
 
 	iJobDiff = t64_to_diff(oPoolJob.iTarget);
 
